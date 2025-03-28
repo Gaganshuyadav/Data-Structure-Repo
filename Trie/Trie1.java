@@ -135,7 +135,7 @@ public class Trie1 {
     public static void countUniqueSubstrings(){
 
         Node curr = root;
-        count++;
+        count++;  // empty string add as count
 
         countAllUniqueSubstrings(curr);
     } 
@@ -143,31 +143,29 @@ public class Trie1 {
     public static String longLength="";
     public static void calculateLongestWordWithAllPrefixes( Node currNode, StringBuilder str){
 
+        //end of word is false then return
+        if(currNode==null){
+            return;
+        }
 
         for(int i=0; i<currNode.children.length; i++){
             
             //if null not check
-            if( currNode.children[i]==null){
-                System.out.println(" ||||"+str);
-            }
-            else if( currNode.children[i].eow==true){
+            if( currNode.children[i]!=null && currNode.children[i].eow==true){
+
                 str.append(  (char)(i+'a'));
-                System.out.println("---- "+str);
 
                 // > this greater than sign represent if both string have same length then store first length which is which is lexographically increasing
                 if( str.length() > longLength.length()){
-                    System.out.println(str);
                     longLength = str.toString();
                 }
                 
                 calculateLongestWordWithAllPrefixes( currNode.children[i], str);
-                str.delete( str.length()-1, str.length());
-                return;
+                str.deleteCharAt( str.length()-1);
+        
             }
-            //end of word is false then return
-            else{
-                return;
-            }
+        
+          
         }
 
         
@@ -255,8 +253,8 @@ public class Trie1 {
         */
 
         /*(5). Longest Word with all Prefixes */
-        // /*
-        String words[] = { "a", "banana", "app", "appl", "ap", "apply", "apple", "b", "c", "cc" , "ccc", "ccca", "cccaa", "cccaaa"  };
+        /*
+        String words[] = { "a", "banana", "app", "appl", "ap", "b", "apply", "apple", "b", "c", "cc" , "ccc", "ccca", "cccaa", "cccaaa"  };
         // String words[] = { "a", "ab", "abc", "p", "pb", "pbd", "pbde", "pbdh" };
         
         //insert in Trie
@@ -267,7 +265,7 @@ public class Trie1 {
         //it should contain all end of word true
         System.out.println( " the answer is "+ longestWordWithAllPrefixes());
 
-        // */
+        */
 
 
     }

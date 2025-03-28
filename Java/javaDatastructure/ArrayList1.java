@@ -1524,7 +1524,7 @@ public class ArrayList1 {
 
         /*(18). Largest Perimeter Triangle  ( a triangle is satisfy when a+b>c, a+c>b, b+c>a )*/
 
-        /* 
+/* 
         int nums[] = { 1, 2, 1, 10};
 
         int maxPer = 0;
@@ -1541,8 +1541,46 @@ public class ArrayList1 {
 
         System.out.println("the max perimeter is "+maxPer);
 
+*/
+
+        /*(19). Contains Duplicate II */
+
+        /*(i). Brute Force O(N^2) */
+        /* 
+        int nums[] = { 1, 2, 3, 1};
+        int k = 3;
+        boolean result=false;
+
+        for(int i=0; i<nums.length; i++){
+            for(int j=i+1; j<nums.length; j++){
+                if(nums[i]==nums[j] && Math.abs(i-j)==k){
+                    result=true;
+                }
+            }
+        }
+
+        System.out.println("the result is "+result);
+
         */
 
+        /*(ii). Use HashMap O(N) */
+
+        int nums[] = { 1, 2, 3, 1};
+        int k = 3;
+        boolean result=false;
+
+        HashMap<Integer,Integer> hm = new HashMap<>();
+
+        for(int i=0; i<nums.length; i++){
+            if( hm.containsKey( nums[i]) && Math.abs(hm.get( nums[i])-i)<=k){
+                result = true;
+            }
+            else{
+                hm.put( nums[i], i);
+            }
+        }
+
+        System.out.println("the result is "+result);
 
 
     }

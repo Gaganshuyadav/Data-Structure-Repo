@@ -1557,7 +1557,7 @@ public class BinaryTreesPart1B {
 
         */
 
-        //using bfs
+       
 
         /*(22). All Nodes Distance K in Binary Tree*/
         public static void parentAddToChildByInOrder( Node root, HashMap<Node,Node> childParent){
@@ -1581,7 +1581,10 @@ public class BinaryTreesPart1B {
         public static void findAllNodesOfDistanceK( Node root, HashMap<Node,Node> childParent, List<Integer> result, Node target, int k){
 
             Queue<Node> que = new LinkedList<>();
-            que.add( root);
+            que.add(target);
+            
+            HashSet<Integer> visited = new HashSet<>();
+            visited.add(target.data);
             int level = 0;
 
             while(!que.isEmpty()){
@@ -1593,8 +1596,9 @@ public class BinaryTreesPart1B {
                     Node curr = que.remove();
 
                     //left
-                    if( curr.left!=null){
+                    if( curr.left!=null && !visited.contains(curr.left.data)){
                         que.add( curr.left);
+                        visited.add( curr.left.data);
                         
                         if( level+1==k){
                             result.add( curr.left.data);
@@ -1602,20 +1606,22 @@ public class BinaryTreesPart1B {
                     }
 
                     //right
-                    if( curr.right!=null){
+                    if( curr.right!=null && !visited.contains(curr.right.data)){
                         que.add( curr.right);
+                        visited.add( curr.right.data);
                         
                         if( level+1==k){
-                            result.add( curr.left.data);
+                            result.add( curr.right.data);
                         }
                     }
 
                     //parant
-                    if( childParent.containsKey( curr)){
+                    if( childParent.containsKey( curr) && !visited.contains( childParent.get(curr).data )){
                         que.add( childParent.get( curr));
+                        visited.add( childParent.get( curr).data );
                         
                         if( level+1==k){
-                            result.add( curr.left.data);
+                            result.add( childParent.get(curr).data);
                         }
                     }
 
@@ -1625,10 +1631,12 @@ public class BinaryTreesPart1B {
                 level++;
 
                 //k nodes added
-                if(level==k-1){
+                if(level==k){
                     break;
                 }
             }
+
+            
         }
 
         public static List<Integer> allNodesOfDistanceK( Node root, Node target, int k){
@@ -1806,68 +1814,175 @@ public class BinaryTreesPart1B {
         /*(25). Count Nodes Equal to Average of Subtree */
 
         //using dfs
-        public static int countNodesEqualToOrCloseToAVG_Minimum = 0;
-        static class CNETAOS{
+        public static int countTotalNodesEqualToAVG_O_S = 0;
+        static class CTNETAOS{
             int count;
             int totalSum;
 
-            CNETAOS( int count, int totalSum){
+            CTNETAOS( int count, int totalSum){
                 this.count = count;
                 this.totalSum = totalSum;
             }
         }
-        public static CNETAOS findAverageSumForCNETAOS(Node root){
+        public static CTNETAOS calculateCountTotalNodesEqualToAverageOfSubtree(Node root){
 
             if(root==null){
-                return new CNETAOS( 0, 0);
+                return new CTNETAOS( 0, 0);
             }
 
-            CNETAOS left = findAverageSumForCNETAOS( root.left);
-            CNETAOS right = findAverageSumForCNETAOS( root.right);
+            CTNETAOS leftNode = calculateCountTotalNodesEqualToAverageOfSubtree( root.left);
+            CTNETAOS rightNode = calculateCountTotalNodesEqualToAverageOfSubtree( root.right);
 
-            int totalSum = left.totalSum + right.totalSum + root.data;
-            int count = left.count + right.count + 1;
+            int totalCount = leftNode.count + rightNode.count + 1;
+            int totalSum = leftNode.totalSum + rightNode.totalSum + root.data;
 
-            return new CNETAOS( count, totalSum);
+            if( totalSum/totalCount == root.data){
+                countTotalNodesEqualToAVG_O_S +=1;
+            }
+
+            return new CTNETAOS( totalCount, totalSum);
+
+
+            
+        }
+        public static int countTotalNodesEqualToAverageOfSubtree(Node root){
+
+            if(root==null){
+                return 1;
+            }
+            if(root.left==null || root.right==null){
+                return 1;
+            }
+
+            CTNETAOS rootNode = calculateCountTotalNodesEqualToAverageOfSubtree( root);
+
+            return countTotalNodesEqualToAVG_O_S;
+
 
         }
-        public static void findCountNodesEqualToAverageOfSubtree( Node root, int treeAvg){
+
+
+        /*(26). Amount of Time for Binary Tree to Be Infected */
+
+
+        //using bfs
+        public static void addParentForAOTFBTTBI( Node root, HashMap<Node,Node> childParent ){
 
             if(root==null){
                 return;
             }
 
-            findCountNodesEqualToAverageOfSubtree( root.left, treeAvg);
-            findCountNodesEqualToAverageOfSubtree( root.right, treeAvg);
+            if( root.left!=null){
+                childParent.put( root.left, root);
+            }
 
-            //calculate average for each
-            CNETAOS subtreeInfo = findAverageSumForCNETAOS( root);
-            int subtreeAvg = subtreeInfo.totalSum/subtreeInfo.count;
+            addParentForAOTFBTTBI( root.left, childParent); 
+
+            if( root.right!=null){
+                childParent.put( root.right, root);
+            }
+
+            addParentForAOTFBTTBI( root.right, childParent);
+
+        }
+        public static Node findTargetNodeForAOTFBTTBI(Node root, int targetValue){
+            
+            if(root==null){
+                return null;
+            }
+
+            if(root.data==targetValue){
+                return root;
+            }
+
+            Node findFromLeft = findTargetNodeForAOTFBTTBI( root.left, targetValue);
+            Node findFromRight = findTargetNodeForAOTFBTTBI( root.right, targetValue);
+
+            if( findFromLeft !=null ){
+                return findFromLeft;
+            }
+
+            
+            return findFromRight;
 
 
-            //equal sign cause we need closer value
-            if( (treeAvg - countNodesEqualToOrCloseToAVG_Minimum) >= Math.abs( treeAvg - subtreeAvg)){
-                countNodesEqualToOrCloseToAVG_Minimum = subtreeAvg;
+        }
+        public static int findAmountOfTimeForBinaryTreeToBeInfected( Node root, HashMap<Node,Node> childParent, Node targetNode){
+
+            if(root==null){
+                return 0;
+            }
+
+            Queue<Node> que = new LinkedList<>();
+            que.add( targetNode);
+
+            HashSet<Integer> visited = new HashSet<>();
+            visited.add( targetNode.data);
+
+            int amountOfTime = 0;
+
+            while(!que.isEmpty()){
+
+                int n = que.size();
+
+                while( n>0){
+
+                    Node curr = que.remove();
+
+                    if(curr.left!=null && !visited.contains( curr.left.data)){
+                        que.add( curr.left);
+                        visited.add( curr.left.data);
+                    }
+
+                    if( curr.right!=null && !visited.contains( curr.right.data)){
+                        que.add( curr.right);
+                        visited.add( curr.right.data);
+                    }
+
+                    if( childParent.containsKey(curr) && !visited.contains( childParent.get( curr).data) ){
+                        que.add( childParent.get( curr));
+                        visited.add( childParent.get( curr).data);
+                    }
+
+                    
+                    n--;
+                    
+                    
+
+                }
+                
+                amountOfTime++;
+                
             }
 
 
 
+            return amountOfTime-1;
 
         }
-        public static int countNodesEqualToAverageOfSubtree(Node root){
+        public static int amountOfTimeForBinaryTreeToBeInfected( Node root, int start){
 
-            //find the average for the Whole Tree
-            CNETAOS treeInfo = findAverageSumForCNETAOS(root);
+            HashMap<Node,Node> childParent = new HashMap<>();
 
-            int treeAvg = treeInfo.totalSum/treeInfo.count;
+            //add parent for the child in hashmap
+            addParentForAOTFBTTBI( root, childParent);
 
-            findCountNodesEqualToAverageOfSubtree( root.left, treeAvg);
-            findCountNodesEqualToAverageOfSubtree( root.right, treeAvg);
+            //i have to find the target Node , cause i have target in as int, but queue contains nodes , so i find it
+            Node targetNode = findTargetNodeForAOTFBTTBI( root, start);
 
-            return countNodesEqualToOrCloseToAVG_Minimum;
+            if(targetNode==null){
+                return 0;
+            }
 
-         
+
+            int totalTimeForBTToBeInfected = findAmountOfTimeForBinaryTreeToBeInfected( root, childParent, targetNode);
+
+            return totalTimeForBTToBeInfected;
         }
+
+
+
+
     public static void main(String[] args) {
         // int nodes[] = { 1, 2, 4, -1, -1, 5 , -1, -1, 3, -1, 6, -1, -1 };
         // int nodes[] = { 1, 2, 4, -1, -1, 5 , -1, -1, 3, 6, -1, -1, -1 };
@@ -1883,7 +1998,8 @@ public class BinaryTreesPart1B {
         // int nodes[] = { 3, 9, -1, -1, 20, 15, -1, -1, 7, -1, -1 };
         // int nodes[] = { 3, 5, 6, -1, -1, 2, 7, -1, -1, 4, -1, -1, 1, 0, -1, -1, 8, -1, -1};
         // int nodes[] = { 1, 3, 5, -1, -1, 3, -1, -1, 2, -1, 9, -1, -1};
-        int nodes[] = { 4, 8, 0, -1, -1, 1, -1, -1, 5, -1, 6, -1, -1};
+        // int nodes[] = { 4, 8, 0, -1, -1, 1, -1, -1, 5, -1, 6, -1, -1};
+        int nodes[] = { 1, 5, -1, 4, 9, -1, -1, 2, -1, -1 , 3, 10, -1, -1, 6, -1, -1};
 
 
         idx = -1;
@@ -2245,7 +2361,11 @@ public class BinaryTreesPart1B {
 
         /*(25). Count Nodes Equal to Average of Subtree */
 
-        System.out.println( countNodesEqualToAverageOfSubtree( root));
+        // System.out.println( countTotalNodesEqualToAverageOfSubtree( root));
+
+        /*(26). Amount of Time for Binary Tree to Be Infected */
+
+        System.out.println( amountOfTimeForBinaryTreeToBeInfected( root, 3));
 
 
     }
