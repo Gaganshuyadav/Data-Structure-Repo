@@ -8,6 +8,11 @@ public class ArrayList1 {
         arr[y] = temp;
 
     }
+
+    @FunctionalInterface
+    interface MyFunction{
+        int apply( int x, int[] arr);
+    }
     public static void main( String args[]){
 
         /*------------------------------------ */
@@ -1565,6 +1570,7 @@ public class ArrayList1 {
 
         /*(ii). Use HashMap O(N) */
 
+        /* 
         int nums[] = { 1, 2, 3, 1};
         int k = 3;
         boolean result=false;
@@ -1581,6 +1587,138 @@ public class ArrayList1 {
         }
 
         System.out.println("the result is "+result);
+
+        */
+
+
+        /*(20). Flood Fill Algorithm */
+          //already solved in graphs
+
+        /*(21). Number of Enclaves (time:- m*n) */
+          //already solved in graphs
+
+          
+        /*(22). acciojobs question:-  
+
+            Architecture Rahul:- 
+
+            Rahul loves placing buildings in increasing order according to their height.
+            So, Rahul has two arrays, arr1 & arr2, respectively.
+            Both contain buildings' heights. So, help Rahul arrange arr1 in strictly increasing order in minimum no. of operations.
+            In one operation, you can choose two indices and do the assignment arr1[i] = arr2[j].
+            If there is no way to make arr1 strictly increasing, return -1.
+            
+            Input Format
+            First line contains two integer n and m denoting the size of arr1 and arr2 respectively.
+            Second line contains n space sparated integers denoting elements in arr1.
+            Third line contains m space sparated integers denoting elements in arr2.
+            
+            Output Format
+            Print an integers denoting the minimum number of operations needed to make arr1 strictly increasing.
+            
+            Example 1
+            Input
+            
+            5 4
+            1 5 3 6 7
+            1 3 2 4
+            Output
+            
+            1
+            Explanation
+            
+            Replace 5 with 2, then arr1 = [1, 2, 3, 6, 7].
+            Example 2
+            Input
+            
+            5 4
+            1 5 3 6 7
+            4 3 1
+            Output
+            
+            2
+            Exmplanation
+            
+            Replace 5 with 3 and then replace 3 with 4. arr1 = [1, 3, 4, 6, 7].
+            Constraints
+            1 <= n,m <= 2000
+            0 <= arr1[i],arr2[i] <= 10^9
+        
+        */
+        
+
+        int arr1[] = { 1, 5, 3, 6, 7};
+        int arr2[] = { 1, 3, 2, 4};
+
+        //sort second array
+        Arrays.sort(arr2);
+
+        for(int i=0; i<arr2.length; i++){
+            System.out.print(arr2[i]+" ");
+        }
+
+        //use binary search
+        MyFunction binarySearch = ( x, arr)->{
+
+            int i=0;
+            int j=arr.length-1;
+            int mid = i + (j-i)/2 ;
+
+            if( arr[mid]==x){
+                return mid;
+            }
+
+            while( i<=j){
+
+                if(arr[mid]<x){
+                    mid+1;
+                }
+                else{
+                    mid-1;
+                }
+
+                mid = (i+j)/2;
+                
+                if( arr[mid]==x){
+                    return mid;
+                }
+
+            }
+
+            return -1;
+
+        };
+
+
+        //now start main logic
+        for(int i=0; i<arr1.lenght-1; i++){
+            
+            if(arr1[i]>arr2[i+1]){
+
+            }
+        }
+
+        // 5 4
+        // 1 5 3 6 7
+        // 1 3 2 4
+        // Output
+        
+        // 1
+        // Explanation
+        
+        // Replace 5 with 2, then arr1 = [1, 2, 3, 6, 7].
+        // Example 2
+        // Input
+        
+        // 5 4
+        // 1 5 3 6 7
+        // 4 3 1
+        // Output
+        
+        // 2
+        // Exmplanation
+        
+        // Replace 5 with 3 and then replace 3 with 4. arr1 = [1, 3, 4, 6, 7].
 
 
     }

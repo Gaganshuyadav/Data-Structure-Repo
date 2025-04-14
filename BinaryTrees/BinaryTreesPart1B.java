@@ -4,7 +4,16 @@ import java.util.*;
 
 import javax.swing.tree.TreeNode;
 
-public class BinaryTreesPart1B {
+import BinaryTrees.BinaryTreesPart1B.CTNETAOS;
+import BinaryTrees.BinaryTreesPart1B.Info2;
+import BinaryTrees.BinaryTreesPart1B.LongestUnivaluePathClass;
+import BinaryTrees.BinaryTreesPart1B.MaxWidthOfBTClass;
+
+
+
+
+public class BinaryTreesPart1B{
+    
     public static class Node{
         int data;
         Node left;
@@ -1662,12 +1671,12 @@ public class BinaryTreesPart1B {
             //(i).check every child only have one parent
             for(int i=0; i<n; i++){
 
-                if( childParent.containsKey( leftChild[i]) || childParent.containsKey(rightChild[i])){
+                if( childParent.containsKey( leftChild[i]) || childParent.containsKey( rightChild[i])){
                     return false;
                 }
 
                 if( leftChild[i]!=-1 && !childParent.containsKey(leftChild[i]) ){
-                    childParent.put( leftChild[i], i);
+                    childParent.put( leftChild[i], i); 
                 }
 
                 if( rightChild[i]!=-1 && !childParent.containsKey(rightChild[i]) ){
@@ -1865,7 +1874,7 @@ public class BinaryTreesPart1B {
         /*(26). Amount of Time for Binary Tree to Be Infected */
 
 
-        //using bfs
+        //using bfs ( add parent for each child)
         public static void addParentForAOTFBTTBI( Node root, HashMap<Node,Node> childParent ){
 
             if(root==null){
@@ -1957,7 +1966,7 @@ public class BinaryTreesPart1B {
 
 
 
-            return amountOfTime-1;
+            return amountOfTime-1; //cause it starts at 0, and after remove of start node, the extra minute is added
 
         }
         public static int amountOfTimeForBinaryTreeToBeInfected( Node root, int start){
@@ -1980,6 +1989,456 @@ public class BinaryTreesPart1B {
             return totalTimeForBTToBeInfected;
         }
 
+        //using dfs( find max far element from the target, and that the count of that will be the answer)
+        public static int depthMaxFarElementForAOTFBTTBI = 0;
+        public static Node findStartNodeForAOTFBTTBISecondApproach( Node root, int targetValue){
+            
+            if(root==null){
+                return null;
+            }
+
+            if(root.data==targetValue){
+                return root;
+            }
+
+            Node findFromLeft = findStartNodeForAOTFBTTBISecondApproach( root.left, targetValue);
+            Node findFromRight = findStartNodeForAOTFBTTBISecondApproach( root.right, targetValue);
+
+            if( findFromLeft !=null ){
+                return findFromLeft;
+            }
+
+            
+            return findFromRight;
+
+        }
+        public static void findFarForAOTFBTTBISecondApproach( Node root, int count){
+        
+            if(root==null){
+                return;
+            }
+
+            depthMaxFarElementForAOTFBTTBI = Math.max( depthMaxFarElementForAOTFBTTBI, count);
+
+            findFarForAOTFBTTBISecondApproach( root.left, count+1);
+            findFarForAOTFBTTBISecondApproach( root.right, count+1);
+        }
+        public static int AOTFBTTBISecondApproach( Node root, int start){
+
+            if(root==null){
+                return 0;
+            }
+
+            if(root.left==null && root.right==null){
+                return 0;
+            }
+
+
+            //find start Node 
+            Node startNode = findStartNodeForAOTFBTTBISecondApproach( root, start);
+
+            findFarForAOTFBTTBISecondApproach( startNode, start);
+
+            return depthMaxFarElementForAOTFBTTBI;
+
+        }
+
+        /*(27). Distribute coins in binary tree */
+
+        /* 
+
+        public static int minimumNumberOfMovesToDistributeCoins = 0;
+        public static int findDistributeCoins(Node root){
+
+            if(root==null){
+                return 0;
+            }
+
+            int left = findDistributeCoins( root.left);
+            int right = findDistributeCoins( root.right);
+
+            minimumNumberOfMovesToDistributeCoins += (Math.abs(left) + Math.abs(right));
+
+            return left + right + root.data - 1;
+
+
+        }
+        public static int distributeCoins(Node root){
+
+            if(root==null){
+                return 0;
+            }
+
+            findDistributeCoins( root);
+
+            return minimumNumberOfMovesToDistributeCoins;
+
+        }
+
+        */
+
+        /*(28). Pseudo-Palindromic Paths in a Binary Tree */
+        static int countPseudoPalindromicPaths = 0;
+        public static void findPseudoPalindromicPaths( Node root, HashMap<Integer,Integer> hm ){
+
+            if(root==null){
+                return;
+            }
+
+            if(hm.containsKey(root.data)){
+                hm.put( root.data, hm.get(root.data)+1);
+            }
+            else{
+                hm.put( root.data, 1);
+            }
+          
+            if(root.left==null && root.right==null){
+
+                int freq=0;
+                
+                for(int key: hm.keySet()){
+                    if( hm.get(key)%2!=0){
+                        freq++;
+                    }
+                }
+
+                if(freq<2 ){
+                    countPseudoPalindromicPaths++;
+                }
+            }
+
+            findPseudoPalindromicPaths( root.left, hm );
+            findPseudoPalindromicPaths( root.right, hm );
+
+            if(hm.get(root.data) > 1){
+                hm.put( root.data, hm.get( root.data)-1);
+            }
+            else{
+                hm.remove( root.data);
+            }
+
+        }
+        public static int pseudoPalindromicPaths(Node root){
+
+            HashMap<Integer,Integer> hm = new HashMap<>();
+            countPseudoPalindromicPaths = 0;
+
+            findPseudoPalindromicPaths( root, hm);
+
+            return countPseudoPalindromicPaths;
+        }
+
+
+        /*(29). Find Bottom Left Tree Value */
+
+        /*(i). First Approach :- using DFS*/
+        public static int leftValue = 0;      
+        public static int bottomMaxCountValue = 0;  
+        public static void findBottomLeftTreeValue( Node root, int count){
+            
+            if(root==null){
+                return;
+            }
+
+            
+            if( bottomMaxCountValue < count ){
+                leftValue = root.data;
+                bottomMaxCountValue = count;
+            }
+
+            findBottomLeftTreeValue( root.left , count+1);
+            findBottomLeftTreeValue( root.right , count+1);
+        }
+
+        public static int bottomLeftTreeValueUsingDFS( Node root){
+
+            if(root==null){
+                return 0;
+            }
+
+            findBottomLeftTreeValue( root, 1);
+
+            return leftValue;
+        }
+        
+        
+        /*(ii). Second Approach :- using BFS*/
+        public static int bottomLeftTreeValueUsingBFS( Node root){
+
+            if(root==null){
+                return 0;
+            }
+
+            Queue<Node> que = new LinkedList<>();
+            que.add( root);
+            int leftValue=root.data;
+
+            while(!que.isEmpty()){
+
+                int n = que.size();
+
+                while( n-- > 0){
+
+                    Node curr = que.remove();
+
+                    if(curr.right!=null){
+                        que.add( curr.right);
+                    }
+
+                    if(curr.left!=null){
+                        que.add( curr.left);
+                    }
+
+                    leftValue = curr.data;
+                }
+            }
+
+
+            return leftValue;
+        
+        }
+
+        
+        /*(30). Even Odd Tree */
+
+            //(i). by using bfs
+
+        public static boolean isEvenOddTreeUsingBFS(Node root){
+    
+            if(root==null){
+                return true;
+            }
+    
+            Queue<Node> que = new LinkedList<>();
+            que.add( root);
+            int prevNodeVal = Integer.MIN_VALUE;
+            boolean isOddCheck = true;
+    
+            while(!que.isEmpty()){
+    
+                int n = que.size();
+    
+                while(n-->0){
+    
+                    Node currNode = que.remove();
+    
+                    //check odd condition
+                    if(isOddCheck){
+    
+                        if(currNode.data%2==0){
+                            return false;
+                        }
+    
+                        if( prevNodeVal < currNode.data){
+                            prevNodeVal = currNode.data;
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+                    //check even condition
+                    else{
+    
+                        if(currNode.data%2!=0){
+                            return false;
+                        }
+    
+                        if(prevNodeVal > currNode.data){
+                            prevNodeVal = currNode.data;
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+
+                    //now add left and right childrens
+                    if(currNode.left!=null){
+                        que.add( currNode.left);
+                    }
+    
+                    if(currNode.right!=null){
+                        que.add( currNode.right);
+                    }
+    
+    
+                }
+    
+                isOddCheck = isOddCheck==true ? false : true;
+                prevNodeVal = isOddCheck==true ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+    
+            }
+    
+            return true;
+
+        }
+
+        
+            //(ii). by using dfs
+        public static boolean findIsEvenOddTreeUsingDFS( Node root, int level,  HashMap< Integer, ArrayList<Integer>> hm ){
+
+            if(root==null){
+                return true;
+            }
+
+            //add level if it does not exist
+            if(!(hm.containsKey(level))){
+                hm.put( level, new ArrayList<>());
+            }
+
+            //if level is even then check for odd condition, otherwise even condition 
+            if(level%2==0){
+
+                if(root.data%2==0){
+                    return false;
+                }
+
+                hm.get(level).add(root.data);
+                
+                if( hm.get(level).size() > 1){
+                    for(int i=hm.get(level).size()-1; i>=1; i++ ){
+                        if( hm.get(level).get(i-1) > hm.get(level).get(i) ){
+                            return false;
+                        }
+                    }
+                }
+
+            }
+            else{
+
+                if(root.data%2!=0){
+                    return false;
+                }
+
+                hm.get(level).add(root.data);
+                
+                if( hm.get(level).size() > 1){
+                    for(int i=hm.get(level).size()-1; i>=1; i++ ){
+                        if( hm.get(level).get(i-1) < hm.get(level).get(i) ){
+                            return false;
+                        }
+                    }
+                }
+
+            }
+ 
+            boolean left = findIsEvenOddTreeUsingDFS( root.left, level, hm);
+            boolean right = findIsEvenOddTreeUsingDFS( root.right, level, hm);
+
+            if( left && right){
+                return true;
+            }
+            else{
+                return false;
+            }
+            
+
+        }
+        public static boolean isEvenOddTreeUsingDFS( Node root){
+
+            if(root==null){
+                return true;
+            }
+
+            HashMap< Integer, ArrayList<Integer>> hm = new HashMap<>();
+
+
+            return findIsEvenOddTreeUsingDFS( root, 0, hm );
+
+        }
+    
+        /*(31). Longest Univalue Path */
+        public static class LongestUnivaluePathClass{
+            int data;
+            int pathValue;
+            int height;
+
+            LongestUnivaluePathClass(int data, int pathValue, int height){
+                this.data = data;
+                this.pathValue = pathValue;
+                this.height = height;
+            }
+        } 
+        public static int longestUnivaluePathMax = 0;
+        public static LongestUnivaluePathClass findLongestUnivaluePath( Node root){
+
+            
+            if(root==null){
+                System.out.println("1:- "+0+" root: "+root);
+                return new LongestUnivaluePathClass( 0, 0, 0);
+                
+            }
+
+            System.out.println(root.data);
+
+            LongestUnivaluePathClass leftPath = findLongestUnivaluePath( root.left );
+            LongestUnivaluePathClass rightPath = findLongestUnivaluePath( root.right);
+
+            //if left and right and root are equal
+            if( root.data==leftPath.data && root.data==rightPath.data){
+
+                //here is we need to return the max path between the 3 paths ( edge case:- [1,null,1,1,1,1,1,1])
+
+                //find max path
+                int maxPath = Math.max( leftPath.pathValue, Math.max( rightPath.pathValue, leftPath.height + rightPath.height + 1) );
+                //find height
+                int maxHeight = Math.max( leftPath.height, rightPath.height) + 1;
+
+                longestUnivaluePathMax = Math.max( longestUnivaluePathMax, maxPath);
+                System.out.println("2:- "+maxPath+" root: "+root.data);
+                return new LongestUnivaluePathClass( root.data, maxPath, maxHeight);
+            }
+            
+            //if left and root are equal
+            if( root.data==leftPath.data){
+
+                //find max path
+                int maxPath = Math.max( leftPath.pathValue, leftPath.height + 1);
+                //find height
+                int maxHeight = leftPath.height + 1;
+
+                longestUnivaluePathMax = Math.max( longestUnivaluePathMax, maxPath);
+                System.out.println("3:- "+maxPath+" root: "+root.data);
+                return new LongestUnivaluePathClass( root.data, maxPath, maxHeight);
+            }
+            
+            //if right and root are equal
+            if( root.data==rightPath.data){
+
+                //find max path
+                int maxPath = Math.max( rightPath.pathValue, rightPath.height + 1);
+                //find height
+                int maxHeight = rightPath.height + 1;
+
+                longestUnivaluePathMax = Math.max( longestUnivaluePathMax, maxPath);
+                System.out.println("4:- "+maxPath+" root: "+root.data);
+                return new LongestUnivaluePathClass( root.data, maxPath, maxHeight);
+            }
+            
+            //if no left and right are match
+            System.out.println("5:- "+1+" root: "+root.data);
+            return new LongestUnivaluePathClass( root.data, 1, 1 );
+
+    }
+        public static int longestUnivaluePath( Node root){
+
+            if(root==null){
+                return 0;
+            }
+
+            longestUnivaluePathMax = 0;
+
+            findLongestUnivaluePath( root);
+
+            //edge case ( if only one value then return 0)
+            if( longestUnivaluePathMax==0){
+                return longestUnivaluePathMax;
+            }
+            else{
+                return longestUnivaluePathMax-1;
+            }
+
+        }
+
 
 
 
@@ -1999,7 +2458,15 @@ public class BinaryTreesPart1B {
         // int nodes[] = { 3, 5, 6, -1, -1, 2, 7, -1, -1, 4, -1, -1, 1, 0, -1, -1, 8, -1, -1};
         // int nodes[] = { 1, 3, 5, -1, -1, 3, -1, -1, 2, -1, 9, -1, -1};
         // int nodes[] = { 4, 8, 0, -1, -1, 1, -1, -1, 5, -1, 6, -1, -1};
-        int nodes[] = { 1, 5, -1, 4, 9, -1, -1, 2, -1, -1 , 3, 10, -1, -1, 6, -1, -1};
+        // int nodes[] = { 1, 5, -1, 4, 9, -1, -1, 2, -1, -1 , 3, 10, -1, -1, 6, -1, -1};
+        // int nodes[] = { 3, 0, -1, -1, 0, -1, -1};
+        // int nodes[] = { 2, 3, 3, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1};
+        // int nodes[] = { 1, 2, 4, -1, -1, -1, 3, 5, 7, -1, -1, -1, 6, -1, -1};
+        // int nodes[] = { 1, 10, 3, 12, -1, -1, 8, -1, -1, -1, 4, 7, 6, -1, -1, -1, 9, -1, 2, -1, -1};
+        // int nodes[] = { 5, 4, 1, -1, -1, 1, -1, -1, 5, -1, 5, -1, -1};
+        int nodes[] = { 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1 };
+
+
 
 
         idx = -1;
@@ -2365,8 +2832,42 @@ public class BinaryTreesPart1B {
 
         /*(26). Amount of Time for Binary Tree to Be Infected */
 
-        System.out.println( amountOfTimeForBinaryTreeToBeInfected( root, 3));
+            //using parent child 
+            // System.out.println( amountOfTimeForBinaryTreeToBeInfected( root, 3));
+
+            //using fartest or max depth
+            // System.out.println( AOTFBTTBISecondApproach(root, 3));
+    
+        /*(27). Distribute coins in binary tree */
+
+        // System.out.println( distributeCoins(root));
+
+        /*(28). Pseudo-Palindromic Paths in a Binary Tree */
+
+        // System.out.println( pseudoPalindromicPaths( root));
+
+        /*(29). Find Bottom Left Tree Value */
+
+            /*(i). First Approach :- using DFS*/
+            // System.out.println(" the bottom left value is " + bottomLeftTreeValueUsingDFS(root));
+
+            /*(ii). Second Approach :- using BFS*/ 
+            // System.out.println(" the bottom left value is " + bottomLeftTreeValueUsingBFS(root));
+
+        /*(30). Even Odd Tree */
+            //by using bfs
+            // System.out.println( "is Odd Even Tree: " + isEvenOddTreeUsingBFS(root));
+
+            //by using dfs
+            // System.out.println( "is Odd Even Tree: " + isEvenOddTreeUsingDFS(root));
+
+        /*(31). Longest Univalue Path */
+
+            System.out.println(" the longest Univalue Path "+ longestUnivaluePath( root) );
+
 
 
     }
+
 }
+
