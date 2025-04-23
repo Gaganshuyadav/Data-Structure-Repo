@@ -103,7 +103,6 @@ public class graph_Part_1 {
             return false;
         
     }
-
     public static boolean cycleDetectionInUndirectedGraph( ArrayList<ArrayList<Edge>> al, HashSet<Integer> visited){
 
         for(int i=0; i<al.size(); i++){
@@ -121,7 +120,7 @@ public class graph_Part_1 {
 
 
 
-    // two colors approach using BFS with time:-  O(V+E) 
+    // ( check for bipartitegraph) two colors approach using BFS with time:-  O(V+E) 
     public static boolean checkIsBipartiteGraphUtils( ArrayList<ArrayList<Edge>> graph, int[] colorList, int curr){
 
         //0 means red color
@@ -180,7 +179,9 @@ public class graph_Part_1 {
 
 
 
-    // two colors approach using DFS with time:-  O(V+E) 
+    
+
+    // ( check for bipartitegraph) two colors approach using DFS with time:-  O(V+E) 
     public static boolean checkIsBipartiteGraphUtilsUsingDFS( ArrayList<ArrayList<Edge>> graph, int[] colorList, int curr, int color){
 
         colorList[curr] = color;
@@ -829,7 +830,7 @@ public class graph_Part_1 {
         /*Graph Traversals*/
 
             //create graph 
-            // /* 
+            /* 
             int V = 7; // Total number of vertices
             ArrayList<ArrayList<Edge>> al = new ArrayList<>();
     
@@ -868,7 +869,7 @@ public class graph_Part_1 {
             // Vertex 6
             al.get(6).add(new Edge(6, 5, 1));
 
-            // */
+            */
 
 
             /*(1). (using BFS ) ( time complexity is O(V+E) )*/
@@ -899,10 +900,10 @@ public class graph_Part_1 {
           
             /*(2).(using DFS) ( time complexity is O(V+E) )*/
 
-            // /* 
+            /* 
             HashSet<Integer> visited = new HashSet<>();
             traversalDFS( al, visited, 0);
-            // */
+            */
 
             /*(3). Has Path exists*/
             /* 

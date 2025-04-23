@@ -1,5 +1,6 @@
 package BinaryTrees;
 
+
 import java.util.*;
 
 import javax.swing.tree.TreeNode;
@@ -8,6 +9,7 @@ import BinaryTrees.BinaryTreesPart1B.CTNETAOS;
 import BinaryTrees.BinaryTreesPart1B.Info2;
 import BinaryTrees.BinaryTreesPart1B.LongestUnivaluePathClass;
 import BinaryTrees.BinaryTreesPart1B.MaxWidthOfBTClass;
+import BinaryTrees.BinaryTreesPart1B.SmallestStringSFLClass;
 
 
 
@@ -2274,78 +2276,76 @@ public class BinaryTreesPart1B{
 
         
             //(ii). by using dfs
-        public static boolean findIsEvenOddTreeUsingDFS( Node root, int level,  HashMap< Integer, ArrayList<Integer>> hm ){
+        public static boolean isEvenOddTreeUsingDFS( Node root, int level,  HashMap< Integer, ArrayList<Integer>> hm ){
 
             if(root==null){
                 return true;
             }
-
+    
             //add level if it does not exist
             if(!(hm.containsKey(level))){
                 hm.put( level, new ArrayList<>());
             }
-
+    
             //if level is even then check for odd condition, otherwise even condition 
             if(level%2==0){
-
+    
                 if(root.data%2==0){
                     return false;
                 }
-
+    
                 hm.get(level).add(root.data);
                 
+                //strictly increasing check for even level, edge case:- if equal values than false
                 if( hm.get(level).size() > 1){
-                    for(int i=hm.get(level).size()-1; i>=1; i++ ){
-                        if( hm.get(level).get(i-1) > hm.get(level).get(i) ){
-                            return false;
-                        }
+                    if( hm.get(level).get(hm.get(level).size()-2) >= hm.get(level).get(hm.get(level).size()-1) ){
+                        return false;
                     }
                 }
-
+    
             }
+    
             else{
-
+    
                 if(root.data%2!=0){
                     return false;
                 }
-
+    
                 hm.get(level).add(root.data);
-                
+                    
+                //strictly decreasing check for odd level, edge case:- if equal values than false
                 if( hm.get(level).size() > 1){
-                    for(int i=hm.get(level).size()-1; i>=1; i++ ){
-                        if( hm.get(level).get(i-1) < hm.get(level).get(i) ){
-                            return false;
-                        }
+                    if( hm.get(level).get(hm.get(level).size()-2) <= hm.get(level).get(hm.get(level).size()-1) ){
+                        return false;
                     }
                 }
-
+    
             }
- 
-            boolean left = findIsEvenOddTreeUsingDFS( root.left, level, hm);
-            boolean right = findIsEvenOddTreeUsingDFS( root.right, level, hm);
-
+     
+            boolean left = isEvenOddTreeUsingDFS( root.left, level+1, hm);
+            boolean right = isEvenOddTreeUsingDFS( root.right, level+1, hm);
+    
             if( left && right){
                 return true;
             }
             else{
                 return false;
             }
-            
 
         }
-        public static boolean isEvenOddTreeUsingDFS( Node root){
-
+        public static boolean findIsEvenOddTreeUsingDFS(Node root){
+        
             if(root==null){
-                return true;
+                    return true;
             }
-
-            HashMap< Integer, ArrayList<Integer>> hm = new HashMap<>();
-
-
-            return findIsEvenOddTreeUsingDFS( root, 0, hm );
-
-        }
     
+            HashMap< Integer, ArrayList<Integer>> hm = new HashMap<>();
+    
+            return isEvenOddTreeUsingDFS( root, 0, hm );
+    
+        }
+
+
         /*(31). Longest Univalue Path */
         public static class LongestUnivaluePathClass{
             int data;
@@ -2363,12 +2363,9 @@ public class BinaryTreesPart1B{
 
             
             if(root==null){
-                System.out.println("1:- "+0+" root: "+root);
                 return new LongestUnivaluePathClass( 0, 0, 0);
                 
             }
-
-            System.out.println(root.data);
 
             LongestUnivaluePathClass leftPath = findLongestUnivaluePath( root.left );
             LongestUnivaluePathClass rightPath = findLongestUnivaluePath( root.right);
@@ -2384,7 +2381,6 @@ public class BinaryTreesPart1B{
                 int maxHeight = Math.max( leftPath.height, rightPath.height) + 1;
 
                 longestUnivaluePathMax = Math.max( longestUnivaluePathMax, maxPath);
-                System.out.println("2:- "+maxPath+" root: "+root.data);
                 return new LongestUnivaluePathClass( root.data, maxPath, maxHeight);
             }
             
@@ -2397,7 +2393,6 @@ public class BinaryTreesPart1B{
                 int maxHeight = leftPath.height + 1;
 
                 longestUnivaluePathMax = Math.max( longestUnivaluePathMax, maxPath);
-                System.out.println("3:- "+maxPath+" root: "+root.data);
                 return new LongestUnivaluePathClass( root.data, maxPath, maxHeight);
             }
             
@@ -2410,12 +2405,10 @@ public class BinaryTreesPart1B{
                 int maxHeight = rightPath.height + 1;
 
                 longestUnivaluePathMax = Math.max( longestUnivaluePathMax, maxPath);
-                System.out.println("4:- "+maxPath+" root: "+root.data);
                 return new LongestUnivaluePathClass( root.data, maxPath, maxHeight);
             }
             
             //if no left and right are match
-            System.out.println("5:- "+1+" root: "+root.data);
             return new LongestUnivaluePathClass( root.data, 1, 1 );
 
     }
@@ -2441,6 +2434,320 @@ public class BinaryTreesPart1B{
 
 
 
+        /*(32). Smallest String Starting From Leaf  */
+
+        /*(i) using dfs*/  /*O(n) */
+        public static String smallerStringSFL = ""; 
+        public static void findSmallestStringStartingFromLeafByDFS( Node root, StringBuilder currString){
+
+            if(root==null){
+                return;
+            }
+          
+
+            if(root.left==null && root.right==null){
+
+                currString.insert(0, (char)('a' + root.data ));
+
+                if( smallerStringSFL=="" || currString.toString().compareTo(smallerStringSFL) < 0){
+                    smallerStringSFL = currString.toString();
+                }
+
+                currString.delete( 0, 1);
+
+                return;
+            }
+    
+            findSmallestStringStartingFromLeafByDFS( root.left, currString.insert(0, (char)('a' + root.data )) ); 
+            currString.delete( 0, 1);
+            findSmallestStringStartingFromLeafByDFS( root.right, currString.insert(0, (char)('a' + root.data )) ); 
+            currString.delete( 0, 1);
+
+        }
+        public static String smallestStringStartingFromLeafByDFS( Node root){
+
+            if(root==null){
+                return "";
+            }
+
+
+            smallerStringSFL = ""; 
+            findSmallestStringStartingFromLeafByDFS( root, new StringBuilder(""));
+
+            return smallerStringSFL.toString();
+
+        }
+
+
+        /*(ii) using bfs */ /*O(n) */
+        public static class SmallestStringSFLClass{
+            Node node;
+            String nodeStr;
+
+            SmallestStringSFLClass( Node node, String nodeStr){
+                this.node = node;
+                this.nodeStr = nodeStr;
+            }
+        }
+
+        public static String smallestStringStartingFromLeafByBFS( Node root){
+
+            if(root==null){
+                return "";
+            }  
+
+
+            Queue<SmallestStringSFLClass> que = new LinkedList<>();
+            que.add(new SmallestStringSFLClass( root, Character.toString((char)(root.data+'a')) ));
+            String smallerString = "";
+
+            while(!que.isEmpty()){
+                
+                int n = que.size();
+ 
+                while( n-- > 0){
+
+                    SmallestStringSFLClass curr = que.remove();
+
+                    if(curr.node.left!=null){
+                        que.add( new SmallestStringSFLClass( curr.node.left, Character.toString( (char)(curr.node.left.data+'a'))+curr.nodeStr ));
+                    }
+
+                    if(curr.node.right!=null){
+                        que.add( new SmallestStringSFLClass( curr.node.right,  Character.toString( (char)(curr.node.right.data+'a')) + curr.nodeStr ));
+                    }
+
+                    //use compareTo method 
+                    if( curr.node.left==null && curr.node.right==null){
+                        if( smallerString=="" || smallerString.compareTo(curr.nodeStr) > 0 ){
+                            smallerString = curr.nodeStr;
+                        }
+                    }
+
+
+                }
+            }
+
+            return smallerString;
+
+        }
+
+        /*(33). Delete Leaves With a Given Value */
+        public static Node deleteLeavesWithGivenValue( Node root, int target){
+
+            if(root==null){
+                return null;
+            }
+
+            root.left = deleteLeavesWithGivenValue( root.left, target);
+            root.right = deleteLeavesWithGivenValue( root.right, target);
+
+            if(root.left==null && root.right==null && root.data==target){
+                return null;
+            }
+
+            return root;
+
+        }
+
+        /*(34). Create Binary Tree From Descriptions */
+        public static Node createBinaryTreeFromDescriptions( int descriptions[][]){
+
+            //contains root with address
+            HashMap<Integer,Node> hm = new HashMap<>();
+            //it contains all childrens, so that we can find the root parent
+            HashSet<Integer> hs = new HashSet<>();
+
+
+            for(int i=0; i<descriptions.length; i++){
+                
+                //parent
+                if(!hm.containsKey(descriptions[i][0])){
+                    hm.put( descriptions[i][0], new Node(descriptions[i][0]));
+                }
+
+                //child
+                if(!hm.containsKey(descriptions[i][1])){
+                    hm.put( descriptions[i][1], new Node(descriptions[i][1]));
+                }
+
+                
+                //now make relation
+
+                //add in left side
+                if(descriptions[i][2]==1){
+                    hm.get( descriptions[i][0]).left = hm.get( descriptions[i][1]);
+                }
+
+                //add in right side
+                if(descriptions[i][2]==0){
+                    hm.get( descriptions[i][0]).right = hm.get( descriptions[i][1]);
+                }
+
+
+                //now add childs in hashset
+                hs.add( descriptions[i][1]);
+
+
+            }
+
+           
+            //find root parent
+            for(int i=0; i<descriptions.length; i++){
+                if(!hs.contains( descriptions[i][0])){
+                    return hm.get(descriptions[i][0]);
+                }
+            }
+
+            return null;
+            
+        }
+
+        /*(35). Linked List in Binary Tree ( leetcode only) ( O(N*L))*/
+        /* 
+        static class LinkNode{
+            int data;
+            Node next;
+            LinkNode(int data){
+                this.data = data;
+                this.next = null;
+            }
+        }
+        public static boolean checkHeadLL( LinkNode head, Node root){
+
+        if(head==null){
+            return true;
+        }
+
+        if(root==null){
+            return false;
+        }
+
+        if( root.data != head.data){
+            return false;
+        }
+
+        return checkHeadLL( head.next, root.left) || checkHeadLL( head.next, root.right);
+
+
+    }
+
+        public static boolean isSubPathLL(Node head, Node root) {
+
+        if(root==null){
+            return false;
+        }
+
+        return checkHeadLL( head, root) || isSubPathLL( head, root.left) || isSubPathLL( head, root.right);
+    
+    }
+    
+    */
+
+        /*(36). Step-By-Step Directions From a Binary Tree Node to Another */
+
+        public static boolean findLowestCommonAncestorForSBSDFABTNTA(Node root, int target, ArrayList<Node> path){
+
+            if(root==null){
+                return false;
+            }
+
+            path.add(root);
+
+            if(root.data==target){
+                return true;
+            }
+
+            if( findLowestCommonAncestorForSBSDFABTNTA( root.left, target, path) || findLowestCommonAncestorForSBSDFABTNTA( root.right, target, path)){
+                return true;
+            }
+
+            path.removeLast();
+
+            return false;
+
+        }
+        public static Node lowestCommonAncestorForSBSDFABTNTA( Node root, int first, int second){
+
+            ArrayList<Node> path1 = new ArrayList<>();
+            ArrayList<Node> path2 = new ArrayList<>();
+
+            findLowestCommonAncestorForSBSDFABTNTA( root, first, path1);
+            findLowestCommonAncestorForSBSDFABTNTA( root, second, path2);
+
+            int i=0;
+            for(i=0; i<path1.size() && i<path2.size(); i++){
+
+                if(path1.get(i).data!=path2.get(i).data){
+                    break;
+                }
+            }
+
+            return path1.get(i-1);
+
+        }
+
+        public static String lcaToTargetForSBSDFABTNTA = "";
+        public static boolean findStepByStepDirectionsFABTNTA( Node root, int target, StringBuilder strB ){
+
+            if(root==null){
+                return false;
+            }
+
+            if( root.data==target){
+                lcaToTargetForSBSDFABTNTA = strB.toString();
+                return true;
+            }
+            
+            strB.append('L');
+            if( findStepByStepDirectionsFABTNTA( root.left, target, strB)){
+                return true;
+            }
+            strB.deleteCharAt( strB.length()-1);
+            
+            strB.append('R');
+            if( findStepByStepDirectionsFABTNTA( root.right, target, strB)){
+                return true;
+            }
+            strB.deleteCharAt( strB.length()-1);
+
+
+
+            return false;
+
+
+        }
+        public static String stepByStepDirectionsFABTNTA( Node root, int startValue, int destValue){
+            
+            if(root==null){
+                return "";
+            }
+
+
+            //find lca
+            Node lca = lowestCommonAncestorForSBSDFABTNTA( root, startValue, destValue);
+
+            StringBuilder result = new StringBuilder();
+
+            lcaToTargetForSBSDFABTNTA = "";
+
+            //find source direction
+            findStepByStepDirectionsFABTNTA( lca, startValue, new StringBuilder());
+
+            for(int i=0; i<lcaToTargetForSBSDFABTNTA.length(); i++){
+                result.append('U');
+            }
+
+            lcaToTargetForSBSDFABTNTA = "";
+
+            //find destination direction
+            findStepByStepDirectionsFABTNTA( lca, destValue, new StringBuilder());
+
+            result.append( lcaToTargetForSBSDFABTNTA);
+
+            return result.toString();
+
+        }
 
     public static void main(String[] args) {
         // int nodes[] = { 1, 2, 4, -1, -1, 5 , -1, -1, 3, -1, 6, -1, -1 };
@@ -2464,7 +2771,11 @@ public class BinaryTreesPart1B{
         // int nodes[] = { 1, 2, 4, -1, -1, -1, 3, 5, 7, -1, -1, -1, 6, -1, -1};
         // int nodes[] = { 1, 10, 3, 12, -1, -1, 8, -1, -1, -1, 4, 7, 6, -1, -1, -1, 9, -1, 2, -1, -1};
         // int nodes[] = { 5, 4, 1, -1, -1, 1, -1, -1, 5, -1, 5, -1, -1};
-        int nodes[] = { 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1 };
+        // int nodes[] = { 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1 };
+        // int nodes[] = { 0, 1, 3, -1, -1, 4, -1, -1, 2, 3, -1, -1, 4, -1, -1 };
+        // int nodes[] = { 1, 2, 2, -1, -1, -1, 3, 2, -1, -1, 4, -1, -1 };
+        int nodes[] = { 5, 1, 3, -1, -1, -1, 2, 6, -1, -1, 4, -1, -1};
+
 
 
 
@@ -2859,13 +3170,45 @@ public class BinaryTreesPart1B{
             // System.out.println( "is Odd Even Tree: " + isEvenOddTreeUsingBFS(root));
 
             //by using dfs
-            // System.out.println( "is Odd Even Tree: " + isEvenOddTreeUsingDFS(root));
+            // System.out.println( "is Odd Even Tree: " + findIsEvenOddTreeUsingDFS( root));
+
 
         /*(31). Longest Univalue Path */
 
-            System.out.println(" the longest Univalue Path "+ longestUnivaluePath( root) );
+            // System.out.println(" the longest Univalue Path "+ longestUnivaluePath( root) );
 
 
+        /*(32). Smallest String Starting From Leaf */
+
+            /*(i). using DFS */
+            // System.out.println(" the Smallest String Starting From Leaf is "+ smallestStringStartingFromLeafByDFS(root) );
+
+            /*(i). using BFS */
+            // System.out.println(" the Smallest String Starting From Leaf is "+ smallestStringStartingFromLeafByBFS(root) );
+
+        /*(33). Delete Leaves With a Given Value*/
+
+            // deleteLeavesWithGivenValue( root, 2);
+
+        /*(34). Create Binary Tree From Descriptions*/
+
+        /* 
+        int descriptions[][] = { { 20, 15, 1}, { 20, 17, 0}, { 50, 20, 1}, { 50, 80, 0}, { 80, 19, 1}};
+        Node newCreatedTree = createBinaryTreeFromDescriptions( descriptions);
+        System.out.println(newCreatedTree.data);
+        */
+    
+        /*(35). Linked List in Binary Tree ( O(N*L)) */
+                /*(lEETCODE ONLY) */
+
+        /*(36). Step-By-Step Directions From a Binary Tree Node to Another */
+
+        System.out.println( "Step-By-Step Directions From a Binary Tree Node to Another is "+ stepByStepDirectionsFABTNTA( root, 3, 6));
+
+        
+
+      
+    
 
     }
 

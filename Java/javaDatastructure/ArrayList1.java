@@ -185,7 +185,7 @@ public class ArrayList1 {
          /*------------------------------------ */
         /*(5). contain water */
         //(i). Brute force approach --O(n2)
-
+    
         /* 
         ArrayList<Integer> height = new ArrayList<>();
         ArrayList<Integer> container = new ArrayList<>();
@@ -1646,7 +1646,7 @@ public class ArrayList1 {
         
         */
         
-
+        /* 
         int arr1[] = { 1, 5, 3, 6, 7};
         int arr2[] = { 1, 3, 2, 4};
 
@@ -1720,6 +1720,69 @@ public class ArrayList1 {
         
         // Replace 5 with 3 and then replace 3 with 4. arr1 = [1, 3, 4, 6, 7].
 
+        */
+
+        /*(23). Remove Duplicates from Sorted Array */
+
+        /*(i). HashMap space and time:- O(n) */
+        /* 
+        int nums[] = { 0,0,1,1,1,2,2,3,3,4};
+        HashMap<Integer,Integer> hm = new HashMap<>();
+        int count=0;
+
+        for(int i=0; i<nums.length; i++){
+                if(!hm.containsKey(nums[i])){
+                    hm.put( nums[i], count++);
+
+                }
+        }
+
+        for(int i: hm.keySet()){
+            nums[hm.get(i)] = i;
+        }
+
+        //now the array is on same order with unique at start
+        System.out.println( " count: "+count);
+
+        */
+
+        /*(ii). Two Pointers Approach ( best approach)*/
+
+        /* 
+        int nums[] = { 0,0,1,1,1,2,2,3,3,4};
+        
+        int count=1;
+        for(int i=1; i<nums.length; i++){
+            
+            if(nums[count-1]!=nums[i]){
+                count++;
+                nums[count-1] = nums[i];
+            }
+        }
+
+        */
+       
+        /*(24). Remove Element */
+
+        /*(i). Two Pointers Approach ( best approach)*/
+
+        /* 
+        int nums[] = { 0,1,2,2,3,0,4,2};
+        int val=2;
+        int count=0;
+
+        for(int i=0; i<nums.length; i++){
+
+            if( nums[i]!=val){
+                nums[count++] = nums[i];
+            }
+        }
+
+        System.out.println( count);
+
+        */
+
+        
 
     }
 }
