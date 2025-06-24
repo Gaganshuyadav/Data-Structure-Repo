@@ -177,7 +177,26 @@ public class graph_Part_1 {
         return true;
     }
 
+    
 
+    // public static boolean checkBIPGU( ArrayList<ArrayList<Edge>> graph, int[] colorList, int curr){
+
+    //     for(int i=0; i<colorList.length; i++){
+            
+    //     }
+    // }
+    // public static boolean checkBIPG( ArrayList<ArrayList<Edge>> graph ){
+
+    //     int colorList[] = new int[graph.size()];
+    //     Arrays.fill( colorList, -1);
+
+    //     for(int i=0; i<graph.size(); i++){
+
+    //         if(colorList[i]==-1){         
+    //             checkBIPGU( graph, colorList, i);
+    //         }                       
+    //     }
+    // }
 
     
 
@@ -388,6 +407,9 @@ public class graph_Part_1 {
                 container.remove(container.size()-1);
         }
     }
+
+
+    public static void allPath()
 
 
     /*dijkstra algorithm */

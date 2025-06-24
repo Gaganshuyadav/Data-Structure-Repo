@@ -6,9 +6,11 @@ import java.util.*;
 import javax.swing.tree.TreeNode;
 
 import BinaryTrees.BinaryTreesPart1B.CTNETAOS;
+import BinaryTrees.BinaryTreesPart1B.CousinsInBTClass;
 import BinaryTrees.BinaryTreesPart1B.Info2;
 import BinaryTrees.BinaryTreesPart1B.LongestUnivaluePathClass;
 import BinaryTrees.BinaryTreesPart1B.MaxWidthOfBTClass;
+import BinaryTrees.BinaryTreesPart1B.NodeNOGLNP;
 import BinaryTrees.BinaryTreesPart1B.SmallestStringSFLClass;
 
 
@@ -2202,7 +2204,7 @@ public class BinaryTreesPart1B{
 
         
         /*(30). Even Odd Tree */
-
+ 
             //(i). by using bfs
 
         public static boolean isEvenOddTreeUsingBFS(Node root){
@@ -2749,8 +2751,658 @@ public class BinaryTreesPart1B{
 
         }
 
+
+        /*(37). Number of Good Leaf Nodes Pairs */
+
+            /*(i). Using BFS */
+        //traverse to add parent for each child
+        public static void addParentForEachChildForNOGLNP( Node root, HashMap<Node,Node> childParent){
+
+            if(root==null){
+                return;
+            }
+
+            if(root.left!=null){
+                childParent.put( root.left, root);
+            }
+
+            if(root.right!=null){
+                childParent.put( root.right, root);
+            }
+
+            addParentForEachChildForNOGLNP( root.left, childParent);
+            addParentForEachChildForNOGLNP( root.right, childParent);
+
+
+        }
+
+        //find Leaf Nodes and store in set
+        public static void findAllLeafNodesForNOGLNP( Node root, HashSet<Node> hs){
+
+            if(root==null){
+                return;
+            }
+
+            if( root.left==null && root.right==null){
+                hs.add( root);
+            }
+
+            findAllLeafNodesForNOGLNP( root.left, hs);
+            findAllLeafNodesForNOGLNP( root.right, hs);
+
+        }
+
+        public static int countNOGLNP = 0;
+
+        static class NodeNOGLNP{
+            int level;
+            Node node;
+
+            NodeNOGLNP( Node node, int level){
+                this.level = level;
+                this.node = node;
+            }
+        }
+        public static void findLeafFromStartNodeForNOGLNP( Node root, HashMap<Node,Node> childParent, int distance){
+
+            if(root==null){
+                return;
+            }
+
+            Queue<NodeNOGLNP> que = new LinkedList<>();
+            que.add( new NodeNOGLNP( root, 0));
+            HashSet<Node> visited = new HashSet<>();
+
+            while(!que.isEmpty()){
+
+                int n = que.size();
+
+                while( n-- > 0){
+
+                    NodeNOGLNP curr = que.remove();
+
+                    if( curr.node.left==null && curr.node.right==null && root!=curr.node){
+                        if( distance>=curr.level){
+                            countNOGLNP++;
+                        }
+                    }
+
+                    if( curr.node.left!=null && !visited.contains(curr.node.left )){
+                        que.add( new NodeNOGLNP( curr.node.left, curr.level+1) );
+                        visited.add( curr.node.left );
+
+                    }
+
+                    if( curr.node.right!=null && !visited.contains(curr.node.right )){
+                        que.add( new NodeNOGLNP( curr.node.right, curr.level+1) );
+                        visited.add( curr.node.right );
+                    }
+
+                    if( childParent.containsKey(curr.node) && !visited.contains( childParent.get( curr.node)) ){
+                        que.add( new NodeNOGLNP( childParent.get(curr.node), curr.level+1) );
+                        visited.add( childParent.get( curr.node) );
+                    }
+
+                }
+
+            }    
+
+
+        }
+
+        public static int numberOfGoodLeafNodesPairs( Node root, int distance){
+
+            if( root==null){
+                return 0;
+            }
+
+            countNOGLNP = 0;
+
+            //add parent for all childs , so that it acts as a graph
+            HashMap<Node,Node> childParent = new HashMap<>();
+
+            addParentForEachChildForNOGLNP( root, childParent);
+
+
+            //find Leaf Nodes and store in set
+            HashSet<Node> hs = new HashSet<>();
+
+            findAllLeafNodesForNOGLNP( root, hs);
+
+            //compare each single leaf node with other node     
+            for(Node leaf: hs){
+                findLeafFromStartNodeForNOGLNP( leaf, childParent, distance);
+            }       
+     
+            return countNOGLNP/2; //due to reverse traverse of two pairs
+
+        }
+
+            /*(ii). Using DFS */
+
+        public static int countNOGLNPUsingDFS = 0;
+        public static List<Integer> findNumberOfGoodLeafNodesPairsUsingDFS( Node root, int distance){
+
+            if( root==null){
+                return new ArrayList<>();
+            }
+
+            if(root.left==null && root.right==null){
+                List<Integer> al = new ArrayList<>();
+                al.add(1);
+                return al;
+            }
+
+            List<Integer> leftList = findNumberOfGoodLeafNodesPairsUsingDFS( root.left, distance);
+            List<Integer> rightList = findNumberOfGoodLeafNodesPairsUsingDFS( root.right, distance);
+
+            List<Integer> al = new ArrayList<>();
+
+            for(int i=0; i<leftList.size(); i++){
+                for(int j=0; j<rightList.size(); j++){
+                    if( ( leftList.get(i) + rightList.get(j)) <= distance ){
+                        countNOGLNPUsingDFS++;
+                    }
+                }
+            }
+
+            // copy all left childs and right childs
+            al.addAll( leftList);
+            al.addAll( rightList);
+
+            for( int i=0; i<al.size(); i++){
+                al.set( i, al.get(i)+1);
+            }
+
+            System.out.println(al+" | "+leftList+ " | "+rightList );
+
+            return al;
+
+        }
+
+        public static int numberOfGoodLeafNodesPairsUsingDFS( Node root, int distance){
+
+            countNOGLNPUsingDFS=0;
+
+            findNumberOfGoodLeafNodesPairsUsingDFS( root, distance);
+
+            return countNOGLNPUsingDFS;
+        }
+
+
+        /*(38). Cousins in Binary Tree */
+
+        /*(i). using DFS */
+            
+            public static void addParentForChildInCousinsInBT( Node root, HashMap<Node,Node> childParent){
+    
+                if(root==null){
+                    return;
+                }
+    
+                if( root.left!=null){
+                    childParent.put( root.left, root);
+                } 
+    
+                if( root.right!=null){
+                    childParent.put( root.right, root);
+                }
+    
+                addParentForChildInCousinsInBT( root.left, childParent);
+                addParentForChildInCousinsInBT( root.right, childParent);
+    
+            }
+    
+            static class CousinsInBTClass{
+                
+                int level;
+                Node node;
+    
+                CousinsInBTClass( int level, Node node){
+                    this.level = level;
+                    this.node = node;
+                }
+            } 
+    
+            public static CousinsInBTClass findDepthForCousinsInBT( Node root, int level, int element){
+    
+                if( root==null){
+                    return new CousinsInBTClass( -1, root);
+                }
+    
+                if( element==root.data){
+                    return new CousinsInBTClass( level, root);
+                }
+    
+                CousinsInBTClass leftNode = findDepthForCousinsInBT( root.left, level+1, element);
+                CousinsInBTClass rightNode = findDepthForCousinsInBT( root.right, level+1, element);
+    
+                if(leftNode.level!=-1){
+                    return leftNode;
+                }
+    
+                return rightNode;
+    
+            }
+        
+            public static boolean cousinsInBT( Node root, int x, int y){
+    
+                HashMap<Node,Node> childParent = new HashMap<>();
+    
+                //take child with their parents 
+                addParentForChildInCousinsInBT( root, childParent);
+    
+    
+                CousinsInBTClass xDepth = findDepthForCousinsInBT( root, 0, x);
+                CousinsInBTClass yDepth = findDepthForCousinsInBT( root, 0, y);
+    
+                //should not have same parent
+                if( childParent.get( xDepth.node) == childParent.get(yDepth.node) ){
+                    return false;
+                }
+                
+                return xDepth.level==yDepth.level;
+            }
+    
+        /*(ii). using BFS */
+
+            public static boolean cousinsInBTUsingBFS( Node root, int x, int y){
+
+
+                Queue<Node> que = new LinkedList<>();
+                que.add(root);
+                int count=0;
+
+                while(!que.isEmpty()){
+
+                    int n = que.size();
+                    count=0;
+
+                    while( n-->0){
+
+                        Node currNode = que.remove();
+
+                        //check if both x and y don't have same parent
+                        if( currNode.left!=null && currNode.right!=null && (currNode.left.data==x || currNode.left.data==y) && (currNode.right.data==x || currNode.right.data==y ) ){
+                            return false;
+                        }
+                        
+
+                        if(currNode.left!=null){
+                            que.add( currNode.left);
+                        }
+
+                        if( currNode.right!=null){
+                            que.add( currNode.right);
+                        }
+
+                        //check if childs are exist in the same level by count , means x and y whole count is 2 in single level means exixt 
+                        if( currNode.data==x || currNode.data==y ){
+                            count++;
+                        }
+
+
+                }
+
+                if(count==2){
+                    return true;
+                }
+
+            }
+
+            return false;   
+                
+        }
+
+
+        /*(39). Flip Equivalent Binary Tree */
+        /* 
+        public boolean flipEquiv(TreeNode root1, TreeNode root2) {
+
+            if( root1==null && root2==null){
+                return true;
+            }
+    
+            if( root1==null || root2==null){
+                return false;
+            }
+    
+            if( root1.val!=root2.val){
+                return false;
+            }
+    
+            boolean withoutFlip = flipEquiv( root1.left, root2.left) && flipEquiv( root1.right, root2.right);
+    
+            boolean withFlip = flipEquiv( root1.left, root2.right) && flipEquiv( root1.right, root2.left);
+    
+            return withoutFlip || withFlip;
+            
+        }
+
+        */
+
+        /*(40). Cousins in Binary Tree II */
+
+        /*(i). using BFS ( O(2N)) */
+        public static void cousinsInBT2UsingBFS( Node root){
+
+            // find each level sum 
+            Queue<Node> que = new LinkedList<>();
+            que.add(root);
+            ArrayList<Integer> al = new ArrayList<>();
+            int eachLevelSum=0;
+            
+            
+            while(!que.isEmpty()){
+
+                int n = que.size();
+                eachLevelSum=0;
+
+                while( n-->0){
+                    
+                    Node curr = que.remove();
+
+                    eachLevelSum += curr.data;
+                    
+                    if( curr.left!=null){
+                        que.add( curr.left);
+                    }
+
+                    if( curr.right!=null){
+                        que.add( curr.right);
+                    }
+
+                    
+                }
+
+                al.add( eachLevelSum);
+            }
+
+
+            // update each node value with current sum
+            que.add(root);  //use old que cause it is empty
+            root.data=0; //it is always 0
+            int i=1;
+            
+            
+            while(!que.isEmpty()){
+
+                int n = que.size();
+
+                while( n-->0){
+
+                    Node curr = que.remove();
+                    
+                    int siblingsSum = curr.left!=null ? curr.left.data : 0;
+                    siblingsSum+= curr.right!=null ? curr.right.data : 0;
+                    
+                    if( curr.left!=null){
+                        curr.left.data = al.get(i) - siblingsSum;
+                        que.add( curr.left);
+                    }
+
+                    if( curr.right!=null){
+                        curr.right.data = al.get(i) - siblingsSum;
+                        que.add( curr.right);
+                    }
+
+                    
+                }
+
+                i++;
+            }
+
+        }
+
+        /*(ii). using BFS ( O(N)) */
+        public static void cousinsInBT2UsingBFSOptimized( Node root){
+
+            Queue<Node> que = new LinkedList<>();
+            ArrayList<Integer> al = new ArrayList<>();
+            que.add(root);
+            int levelSum=0;
+            int nextLevelSum=root.data;
+            
+
+            while(!que.isEmpty()){
+
+                int n = que.size();
+                levelSum = nextLevelSum;
+                nextLevelSum=0;
+
+                while(n-->0){
+  
+                    Node curr = que.remove();
+
+                    curr.data = levelSum - curr.data;
+                    
+
+                    
+                    int siblingsSum = curr.left!=null ? curr.left.data : 0;
+                    siblingsSum+= curr.right!=null ? curr.right.data : 0; 
+
+                    if(curr.left!=null){
+                        que.add( curr.left);
+                        nextLevelSum += curr.left.data;
+                        curr.left.data = siblingsSum;
+                        
+                    }
+
+                    if(curr.right!=null){
+                        que.add( curr.right);
+                        nextLevelSum += curr.right.data;
+                        curr.right.data = siblingsSum;
+                        
+                    }
+                }
+                
+                
+            }
+        }
+        
+        /*(41). Minimum Number of Operations to Sort a Binary Tree by level */
+        public static int minimumNumberOfOperationsToSortABinaryTree( Node root){
+
+            if(root==null ){
+                return 0;
+            }
+
+            Queue<Node> que = new LinkedList<>();
+            que.add( root);
+            int minimumOperations=0;
+
+            while(!que.isEmpty()){
+
+                int n = que.size();
+                ArrayList<Integer> al = new ArrayList<>();
+            
+
+                while(n-->0){
+
+                    Node curr = que.remove();
+                    al.add( curr.data);
+
+                    if(curr.left!=null){
+                        que.add( curr.left);
+                    }
+
+                    if(curr.right!=null){
+                        que.add( curr.right);
+                    }
+
+                }
+
+                //copy the original array and sort it and also take the elements indexes and add in hashmap ---------
+                int tempArr[] = new int[al.size()]; 
+                HashMap<Integer,Integer> hm = new HashMap<>();
+
+
+                for(int i=0; i<al.size(); i++){
+                    tempArr[i] = al.get(i);
+                    hm.put( al.get(i), i);
+
+                }
+
+                Arrays.sort( tempArr);
+
+                //now compare and find minimum operations;
+                for(int i=0; i<al.size(); i++){
+
+                    //if not equal than swap
+                    if( al.get(i)!=tempArr[i]){
+                        //swap
+                        int x = i;
+                        int y = hm.get( tempArr[i]);
+                        Collections.swap( al, x, y );
+                        //now update both index in hashmap also
+                        hm.put( al.get(x), x);
+                        hm.put( al.get(y), y);
+                        minimumOperations++;
+
+                    }
+                }
+    
+            }
+
+            return minimumOperations;
+            
+        }
+
+        /*(42). Find Elements in a Contaminated Binary Tree *//*( Only For Leetcode) */
+        
+        /*(i). using DFS without taking the HashSet ( time:- 2*N) */
+        /* 
+        static public class FindElementsInCBTClass{
+
+            Node root;
+            
+            FindElementsInCBTClass(Node root){
+                this.root = root;
+                dfsForRecover( root, 0);
+            }
+
+            //to recover the tree
+            public void dfsForRecover( Node root, int value){
+                
+                if(root==null){
+                    return;
+                }
+
+                root.data = value;
+
+                dfsForRecover( root.left, 2*value + 1 );
+                dfsForRecover( root.right, 2*value + 2 );
+            }
+
+
+            //check target with dfs
+            public boolean dfsForFindTarget( Node root, int target){
+                         
+                if(root==null){
+                    return false;
+                }
+        
+                if( root.data==target){
+                    return true;
+                }
+        
+                if( dfsForFindTarget( root.left, target ) || dfsForFindTarget( root.right, target )){
+                    return true;
+                }
+        
+                return false;
+            }
+
+            //to check if target present
+            public boolean find( int target){
+                return dfsForFindTarget( this.root, target);
+            }
+
+        }
+
+        */
+
+        /*(ii). using DFS with HashSet  ( time:- N and space:- N) */
+        static public class FindElementsInCBTClass{
+
+            Node root;
+            HashSet<Integer> hs = new HashSet<>();
+            
+            FindElementsInCBTClass(Node root){
+                this.root = root;
+                dfsForRecover( root, 0);
+            }
+
+            //to recover the tree
+            public void dfsForRecover( Node root, int value){
+                
+                if(root==null){
+                    return;
+                }
+
+                root.data = value;
+                this.hs.add( value);
+
+                dfsForRecover( root.left, 2*value + 1 );
+                dfsForRecover( root.right, 2*value + 2 );
+            }
+
+            //to check if target present
+            public boolean find( int target){
+                return hs.contains( target);
+            }
+
+        }
+
+        /*(43). Recover a Tree From Preorder Traversal */
+        static int indexOfRATFPTUDFS = 0;
+        public static Node recoverATFPTUDFS( String traversal, int depth){
+
+            if(indexOfRATFPTUDFS>=traversal.length()){
+                System.out.println(" return with length ");
+                return null;
+            }
+
+            //now count ( - ) to find the depth value---
+            int depthCount=0;
+            int idx = indexOfRATFPTUDFS;
+            while(!Character.isDigit( traversal.charAt(idx))){
+
+                depthCount++;
+                idx++;
+                
+            }
+            idx++;
+ 
+            // if depthCount is not equal to depth
+            if( depth!=depthCount){
+                System.out.println(" return with depth ");
+                return null;
+            }
+            indexOfRATFPTUDFS = indexOfRATFPTUDFS + depthCount + 1;
+
+            //if equal depths then create new node
+            System.out.println("------------------------");
+            System.out.print(Integer.parseInt(traversal.substring( indexOfRATFPTUDFS-1, indexOfRATFPTUDFS)) );
+            System.out.println(" idx: "+indexOfRATFPTUDFS+" depth: "+depth+" depthCount: "+depthCount);
+            Node newNode = new Node( Integer.parseInt(traversal.substring( indexOfRATFPTUDFS-1, indexOfRATFPTUDFS)) );
+            newNode.left = recoverATFPTUDFS( traversal, depthCount+1);
+            newNode.right = recoverATFPTUDFS( traversal, depthCount+1);
+
+            return newNode;
+
+        }
+ 
+        public static Node recoverATreeFromPreorderTraversalUsingDFS( String traversal){                       
+
+            indexOfRATFPTUDFS=0;
+            Node newRoot = recoverATFPTUDFS( traversal, 0);
+            return newRoot;                                                             
+        }
+
+
     public static void main(String[] args) {
-        // int nodes[] = { 1, 2, 4, -1, -1, 5 , -1, -1, 3, -1, 6, -1, -1 };
+        int nodes[] = { 1, 2, 4, -1, -1, 5 , -1, -1, 3, -1, 6, -1, -1 };
         // int nodes[] = { 1, 2, 4, -1, -1, 5 , -1, -1, 3, 6, -1, -1, -1 };
         // int nodes[] = { 1, 2, 4, -1, -1, 5, -1, 6, -1, 7, -1, -1, 3, -1, -1};
         // int nodes[] = { 1, 2, 4, -1, -1, 5 , -1, -1, 3, 6, -1, -1, 7, -1, -1 };
@@ -2774,10 +3426,14 @@ public class BinaryTreesPart1B{
         // int nodes[] = { 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1 };
         // int nodes[] = { 0, 1, 3, -1, -1, 4, -1, -1, 2, 3, -1, -1, 4, -1, -1 };
         // int nodes[] = { 1, 2, 2, -1, -1, -1, 3, 2, -1, -1, 4, -1, -1 };
-        int nodes[] = { 5, 1, 3, -1, -1, -1, 2, 6, -1, -1, 4, -1, -1};
-
-
-
+        // int nodes[] = { 5, 1, 3, -1, -1, -1, 2, 6, -1, -1, 4, -1, -1};
+        // int nodes[] = { 1, 2, 4, -1, -1, 5, -1, -1, 3, 6, -1, -1, 7, -1, -1};
+        // int nodes[] = { 1, 1, -1, -1, 1, -1, -1};
+        // int nodes[] = { 7, 1, 6, -1, -1, -1, 4, 5, -1, -1, 3, -1, 2, -1, -1 };
+        // int nodes[] = { 1, 2, 4, -1, -1, -1, 3, -1, -1};
+        // int nodes[] = { 5, 4, 1, -1, -1, 10, -1, -1, 9, -1, 7, -1, -1};
+        // int nodes[] = { 1, 4, 7, -1, -1, 6, -1, -1, 3, 8, 9, -1, -1, 5, 10, -1, -1};
+        // int nodes[] = { -2, -2, -2, -1, -1, -2, -1, -1, -2, -1, -1};
 
 
         idx = -1;
@@ -3203,12 +3859,64 @@ public class BinaryTreesPart1B{
 
         /*(36). Step-By-Step Directions From a Binary Tree Node to Another */
 
-        System.out.println( "Step-By-Step Directions From a Binary Tree Node to Another is "+ stepByStepDirectionsFABTNTA( root, 3, 6));
+            // System.out.println( "Step-By-Step Directions From a Binary Tree Node to Another is "+ stepByStepDirectionsFABTNTA( root, 3, 6));
+
+        /*(37). Number of Good Leaf Nodes Pairs */
+
+            // System.out.println( " Number of Good Leaf Nodes Pairs " + numberOfGoodLeafNodesPairsUsingDFS( root, 3) );
+      
+        /*(38). Cousins in Binary Tree */
+
+            /*(i). using DFS */
+            // System.out.println( " Find Cousins in a Binary Tree is " +  cousinsInBT( root, 4, 3) );
+
+            /*(ii). using BFS */
+            // System.out.println( " Find Cousins in a Binary Tree is " +  cousinsInBTUsingBFS( root, 4, 3) );
+
+        /*(39). Flip Equivalent Binary Tree */
+           
+           //( Only For Leetcode)
+
+        /*(40). Cousins in Binary Tree II */
+
+            /*(i). using BFS ( O(2N)) */
+            // cousinsInBT2UsingBFS( root);
+            /*(ii). using BFS ( O(N)) */
+            // cousinsInBT2UsingBFSOptimized( root);
+
+        /*(41). Minimum Number of Operations to Sort a Binary Tree by level */
+
+            // System.out.println( "minimum number of operations to sort a binary tree is " + minimumNumberOfOperationsToSortABinaryTree( root));
+
+        /*(42). Find Elements in a Contaminated Binary Tree *//*( Only For Leetcode) */
+
+            /* 
+
+            FindElementsInCBTClass findEICBTInstance = new FindElementsInCBTClass( root);
+            System.out.println( findEICBTInstance.find( 2));
+            System.out.println( findEICBTInstance.find( 5));
+
+            */
+        
+        /*(43). Recover a Tree From Preorder Traversal */
+
+        // Node newRoot = recoverATreeFromPreorderTraversalUsingDFS( "1-2--3--4-5--6--7");
+        // levelOrderTraversal( newRoot);
+
+        /*(44). Maximum Depth of Binary Tree ( Leetcode)*/
+
+        /*(45). Minimum Distance Between BST Nodes */
+        
+        
+
+        
+        
+
+
 
         
 
-      
-    
+
 
     }
 

@@ -1782,7 +1782,154 @@ public class ArrayList1 {
 
         */
 
+        /*(25). Best Time to Buy and Sell Stock - I */
+
+        /*(i). first Approach using brute force O(n^2) ( time limit exceeded) */
         
+        /*
+
+        int prices[] = { 7, 1, 5, 3, 6, 4 };
+
+        int maxProfit=0;
+        for(int i=0; i<prices.length; i++){
+            for(int j=i+1; j<prices.length; j++){
+                
+                if( maxProfit < (prices[j]-prices[i]) ){
+                    maxProfit = ( prices[j]-prices[i] );
+                }
+            }
+        }
+
+        if(maxProfit==0){
+            return 0;
+        }
+
+        System.out.println("the max profit is "+maxProfit);;
+
+        */
+
+
+        /*(ii). second Approach */
+
+        /* 
+        //minimum 
+        int bestTimeToBuy=prices[0];
+        
+
+        //now just sell stock with maxProfit
+        int maxProfit = 0;
+        for(int i=1; i<prices.length; i++){
+
+            if( maxProfit < (prices[i]-bestTimeToBuy ) ){
+                maxProfit = prices[i]-bestTimeToBuy;
+            }
+
+            bestTimeToBuy = Math.min( bestTimeToBuy, prices[i]);
+
+        }
+
+        if(maxProfit==0){
+            return 0;
+        } 
+
+        return maxProfit;
+
+        */
+
+        /*(26). Best Time to Buy and Sell Stock - II */
+
+        /*(i). Iteration comparision Approach */
+        
+        /*
+
+        int prices[] = { 7, 1, 5, 3, 6, 4 };
+
+        int maxProfit=0;
+        for(int i=1; i<prices.length; i++){
+            if( prices[i-1]<prices[i]){
+                maxProfit += prices[i] - prices[i-1];
+            }
+        }
+
+
+        System.out.println("the max profit is "+maxProfit);;
+
+        */
+
+        /*(27). Kth Largest Element in an Array ( due to this i am not able to go in next round of RSL( acciojob test)) */
+
+        /*(i). the way i do it */
+        /* 
+        int nums[] = { 3,2,3,1,2,4,5,5,6};
+        int k=4;
+
+        //sort the array firstly
+        Arrays.sort( nums);
+
+        //now reverse the sorted array to get largest elements from start
+        int i=0; 
+        int j=nums.length-1; 
+
+        while(i<=j){
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+            i++;
+            j--;
+        }
+
+        int ans = 0;
+        for(int x=0; x<nums.length; x++){
+            
+            if(k==(x+1)){
+                ans = nums[x];
+                break;
+            }
+        }
+
+        System.out.println("the kth largest element is "+ans);
+
+        */
+
+
+        /*(ii). the way i do it ( more concise way)*/
+        /* 
+
+        int nums[] = { 3,2,3,1,2,4,5,5,6};
+        int k=4;
+
+
+        // sort the array in descending order.
+        List<Integer> list = Arrays.stream(nums).boxed().sorted((a,b)->b-a).toList();
+        System.out.println(list);
+
+
+        int ans = 0;
+        for(int x=0; x<list.size(); x++){
+            
+            if(k==(x+1)){                       
+                ans = list.get(x);
+                break;
+            }
+        }
+
+        System.out.println("the kth largest element is "+ans);
+
+        */
+        
+
+        
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }

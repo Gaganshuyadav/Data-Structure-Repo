@@ -55,10 +55,10 @@ public class JavaBasicVariablesAndDatatypes {
     
     //Scanner scgagan = new Scanner(System.in);  
     
-    //String inputgagan = scgagan.next();
+    //String inputgagan = scgagan.next();       //Behavior: Reads the next token (word) from the input. A token is delimited by whitespace (space, tab, or newline). Stops Reading: Stops at the first whitespace it encounters.
     //System.out.println(inputgagan);
     
-    //String inpful=scgagan.nextLine();
+    //String inpful=scgagan.nextLine();         //Behavior: Reads the entire line of input, including spaces, until a newline character is encountered. Stops Reading: Stops only when the user presses Enter.
     //System.out.println(inpful);
     
     //int num = scgagan.nextInt();
@@ -259,3 +259,115 @@ public class loops{
   }
 }
 */
+
+/* Take Input in java:-*/
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+public class loops{
+  public static void main(String[] args){
+  
+    /*(i). first way(Scanner) :- */
+    /* 
+    Scanner sc = new Scanner( System.in);
+    System.out.print("Enter no. of n ");
+    int n = sc.nextInt();
+    int[] arr = new int[n];
+
+    System.out.println();
+
+
+    int curr=0;
+    for(int i=0; i<n; i++){
+     
+      System.out.println("Enter the value of " + (i+1)+ " : " ); 
+      arr[i] = sc.nextInt();
+      curr = curr+ arr[i];
+    }
+
+    System.out.println("the total sum is "+curr);
+
+    */
+
+    /*(ii). second way(System.in.read()) :- */
+    /* 
+    try{
+    
+    System.out.print("Enter no. of n ");
+    int n = System.in.read();
+    System.out.println(n);
+
+
+ 
+  }
+  catch(Exception err){
+    System.out.println(err);
+  }
+
+  */
+
+  /*(iii). third way(BufferReader) :- */
+
+
+  try{
+
+  
+  BufferedReader br = new BufferedReader( new InputStreamReader( System.in));
+  
+  System.out.println("Enter input: ");
+  int num = Integer.parseInt( br.readLine());
+  System.out.println(num);
+
+  br.close();
+
+  }
+  catch(Exception err){
+    System.out.println(err);
+  }
+
+
+  /*(iv). fourth way( Scanner) :- */
+
+  //Scanner scgagan = new Scanner(System.in);  
+    
+    //String inputgagan = scgagan.next();       //Behavior: Reads the next token (word) from the input. A token is delimited by whitespace (space, tab, or newline). Stops Reading: Stops at the first whitespace it encounters.
+    //System.out.println(inputgagan);
+    
+    //String inpful=scgagan.nextLine();         //Behavior: Reads the entire line of input, including spaces, until a newline character is encountered. Stops Reading: Stops only when the user presses Enter.
+    //System.out.println(inpful);
+    
+    //int num = scgagan.nextInt();
+    //System.out.println(num);
+    
+    //float price = scgagan.nextFloat();
+    //System.out.println(price);
+    
+    //--------(take input types)--------
+    
+    //next
+    //nextLine
+    //nextInt
+    //nextByte
+    //nextFloat
+    //nextDouble
+    //nextBoolean
+    //nextShort
+    //nextLong
+
+  
+
+
+    
+
+
+    
+  }
+}
+
+
+
+
+

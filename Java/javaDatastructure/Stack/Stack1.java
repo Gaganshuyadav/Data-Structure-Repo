@@ -2374,23 +2374,29 @@ public class Stack1 {
         /*(34). Remove All Occurrences of a substring */
 
             /*(i). with using string */
-            // String s = "daabcbaabcbc";
-            // String part = "abc";
-            // StringBuilder result = new StringBuilder("");
 
-            // for(int i=0; i<s.length(); i++){
+            /* 
+            String s = "daabcbaabcbc";
+            String part = "abc";
+            StringBuilder result = new StringBuilder("");
 
-            //     result.append( s.charAt(i));
+            for(int i=0; i<s.length(); i++){
 
-            //     if( result.length() >= part.length() && result.substring( result.length() - part.length()).equals(part)){
+                result.append( s.charAt(i));
+
+                if( result.length() >= part.length() && result.substring( result.length() - part.length()).equals(part)){
                  
-            //            result.delete( result.length()-part.length(), result.length());
-            //     }
+                       result.delete( result.length()-part.length(), result.length());
+                }
                 
-            // }
+            }
 
 
-            // System.out.println(result);
+            System.out.println(result);
+
+            */
+
+            
 
 
     }    

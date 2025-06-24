@@ -290,6 +290,7 @@ public class Backtracking {
         // System.out.println("Total ways are: "+ways);
 
         //7. [ Sudoku ]
+        /* 
         int sudoku[][] = { 
             {0, 0, 8, 0, 0, 0, 0, 0, 0},
             {4, 9, 0, 1, 5, 7, 0, 0, 2},
@@ -310,6 +311,10 @@ public class Backtracking {
         //--// }
 
         sudokuSolver77(sudoku, 0, 0);
+
+        */
+
+        /*(8). Game of Execution:- Josephus Problem */
 
     }
 }

@@ -1,36 +1,44 @@
 
 
+/*Question:1:- */
 
+/*
 
-// let num1A = [ 3, 2, 1];
-// let num2A= [ 1, 2, 3];
+let num1A = [ 3, 2, 1];
+let num2A= [ 1, 2, 3];
 
-// let num1 = ""; 
-// let num2 = "";
+let num1 = ""; 
+let num2 = "";
 
-// for(let i=0; i<num1A.length; i++){
-//     num1 += num1A[i];
-// }
+for(let i=0; i<num1A.length; i++){
+    num1 += num1A[i];
+}
 
-// for(let i=0; i<num2A.length; i++){
-//     num2 += num2A[i];
-// }
+for(let i=0; i<num2A.length; i++){
+    num2 += num2A[i];
+}
 
-// let ans = Math.abs(num2 - num1); 
-// console.log(ans)
-// let ansA = new Array(ans.toString().length).fill(0); 
+let ans = Math.abs(num2 - num1); 
+console.log(ans)
+let ansA = new Array(ans.toString().length).fill(0); 
 
-// for(let i=0; i<ans.toString().length; i++){
-//     console.log(ans.toString().charAt(i) +"   ");
-// }
+for(let i=0; i<ans.toString().length; i++){
+    console.log(ans.toString().charAt(i) +"   ");
+}
 
  
-// let m1 = [1, 3, 4, 5];
-// let m2 = [2, 4, 6, 8];
+let m1 = [1, 3, 4, 5];
+let m2 = [2, 4, 6, 8];
 
-// console.log([...m1,...m2]) 
-// console.log([...m1,...m2].sort((a,b)=>a-b))
+console.log([...m1,...m2]) 
+console.log([...m1,...m2].sort((a,b)=>a-b))
 
+*/
+
+
+/*Question:2:- */
+
+/*
 
 class ListNode{
     constructor(val){
@@ -82,12 +90,7 @@ while(dummyHead!=null){
 
 
 
-
-
-
-
-
-
+*/
 
 
 
