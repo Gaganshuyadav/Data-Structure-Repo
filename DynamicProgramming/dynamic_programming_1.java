@@ -815,6 +815,54 @@ public class dynamic_programming_1{
                 return dp[n] = result;
             }
 
+        /*(20). Coin Change II */
+
+        /*(i). using Recursion  ( time limit exceeded) */    
+        public static int coinChange2UsingRecursion( int coins[], int i, int amount, int curr){
+
+           
+            if( curr==amount){
+                return 1;
+            }
+
+            if( curr>amount || (coins.length-1)<i){
+                return 0;
+            }
+
+            int take = coinChange2UsingRecursion( coins, i, amount, curr+coins[i]);
+
+            int unTake = coinChange2UsingRecursion( coins, i+1, amount, curr);
+
+            return take + unTake;
+
+        }
+
+        /*(ii). using Recursion Memoization */    
+        public static int coinChange2UsingRecursionMemo( int coins[], int i, int amount, int curr, int dp[][]){
+
+            if( curr==amount){
+                return 1;
+            }
+
+            if( curr>amount || (coins.length-1)<i){
+                return 0;
+            }
+
+            if( dp[i][curr]!=-1){
+                return dp[i][curr];
+            }
+
+            int take = coinChange2UsingRecursionMemo( coins, i, amount, curr+coins[i], dp);
+
+            int unTake = coinChange2UsingRecursionMemo( coins, i+1, amount, curr, dp);
+
+            return dp[i][curr] = take + unTake;
+
+        }
+
+        /*(iii). output limit exceeded */
+
+        
 
     public static void main(String[] args){
 
@@ -1432,6 +1480,60 @@ public class dynamic_programming_1{
             int dp[] = new int[n+1];
             System.out.println( " the Catalan Number is " + findCatalanNumberUsingRecursionMemo( n, dp) );
             */
+
+        /*(20). Coin Change II */
+
+            /*(i). using Recursion  ( time limit exceeded)  */
+
+            /* 
+            int coins[] = { 1, 2, 5};
+            int amount=5;
+
+            System.out.println( " the coin II combinations are " + coinChange2UsingRecursion( coins, 0, amount, 0) );
+
+            */
+
+            /*(ii). using Recursion Memoization */  
+
+            int coins[] = { 1, 2, 5};
+            int amount=5;
+
+            int dp[][] = new int[coins.length][amount];
+
+            for(int i=0; i<coins.length; i++){
+                for(int j=0; j<amount; j++){
+                    dp[i][j] = -1;
+                }
+            }
+
+            System.out.println( " the coin II combinations are " + coinChange2UsingRecursionMemo( coins, 0, amount, 0, dp) );
+
+            
+
+            /*(iii). using tabulation */
+            /* 
+
+            int coins[] = { 1, 2, 5};
+            int amount=5;
+
+            int dp[] = new int[amount+1];
+            dp[0] = 1;
+    
+            for(int i=0; i<coins.length; i++){
+                for(int j=1; j<amount+1; j++){
+    
+                    if( (j-coins[i])>=0 && dp[j-coins[i]] > 0 ){
+                        dp[j] = dp[j] + dp[j-coins[i]];
+                    }
+
+                }
+            }
+    
+            System.out.println( " the coin II combinations are " + dp[amount] );
+
+            */
+
+
 
         
         

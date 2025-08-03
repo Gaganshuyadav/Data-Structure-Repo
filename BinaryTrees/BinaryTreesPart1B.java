@@ -3400,6 +3400,37 @@ public class BinaryTreesPart1B{
             return newRoot;                                                             
         }
 
+        /*(44). */
+        /*(45). */
+
+        public static class Infooo{
+            int diameter;
+            int height;
+            Infooo( int diameter, int height){
+                this.diameter = diameter;
+                this.height = height;
+            }
+        }
+        public static Infooo DiameterOFATreeA( root){
+
+            if(root==null){
+                return new Infooo( 0, 0);
+            }
+
+            Infooo leftInfo = DiameterOFATreeA( root.left);
+            Infooo rightInfo = DiameterOFATreeA( root.right);
+
+            // max height
+            int maxHeight = Math.max( leftInfo.height, rightInfo.height) + 1;
+
+            // find diameter
+            int diameter = Math.max( ( leftInfo.height + rightInfo.height + 1) , Math.max( leftInfo.diameter, rightInfo.diameter));
+
+            return new Infooo( diameter, );
+
+
+        }
+
 
     public static void main(String[] args) {
         int nodes[] = { 1, 2, 4, -1, -1, 5 , -1, -1, 3, -1, 6, -1, -1 };
@@ -3906,6 +3937,16 @@ public class BinaryTreesPart1B{
         /*(44). Maximum Depth of Binary Tree ( Leetcode)*/
 
         /*(45). Minimum Distance Between BST Nodes */
+
+        // first: O(n2) 
+        int DiameterOFATree = DiameterOFATreeA(root);
+        System.out.println(DiameterOFATree);
+
+
+
+            // optimized: O(n) 
+            // Info info = DiameterOFATreeOptimized(root);
+            // System.out.println(info.diameter+"   "+info.height);
         
         
 
